@@ -1,0 +1,123 @@
+meshConfig:
+  enablePrometheusMerge: false
+  ProxyConfig:
+    interceptionMode: REDIRECT
+
+istio_cni:
+  enable: true
+
+pilot:
+  autoscaleEnabled: true
+  autoscaleMin: 1
+  autoscaleMax: 5
+  replicaCount: 1
+  rollingMaxSurge: 100%
+  rollingMaxUnavailable: 25%
+
+# KIALI VALUES
+#################################
+kiali-server:
+  isDashboardEnabled: true
+  nameOverride: “kiali”
+  fullnameOverride: “kiali”
+  kiali_route_url: “”
+  istio_namespace: “istio-system” # default is where Kiali is installed
+  api:
+    namespaces:
+      exclude:
+        - “kube-.*”
+ #       - “istio-system”
+  auth:
+    openid: {}
+    openshift: {}
+    strategy: “anonymous”
+  kubernetes_config:
+    excluded_workloads:
+    - “DaemonSet”
+  deployment:
+    override_ingress_yaml:
+      spec:
+        ingressClassName: public
+        rules:
+        - host: kiali.eu.dev.csg.daimler-truck.com
+          http:
+            paths:
+            - backend:
+                serviceName: kiali
+                servicePort: 20001
+              path: /
+              pathType: ImplementationSpecific
+        tls:
+        - hosts:
+          - kiali.eu.dev.csg.daimler-truck.com
+    # This only limits what Kiali will attempt to see, but Kiali Service Account has permissions to see everything.
+    # For more control over what the Kial Service Account can see, use the Kiali Operator
+    #accessible_namespaces: [“^((?!(istio-system|kube.*)).)*$“]
+    additional_service_yaml: {}
+    affinity:
+      node: {}
+      pod: {}
+      pod_anti: {}
+    custom_dashboards:
+      excludes: [‘’]
+      includes: [‘*’]
+    hpa:
+      api_version: “autoscaling/v2beta2”
+      spec: {}
+    image_name: quay.io/kiali/kiali
+    image_pull_policy: “Always”
+    image_pull_secrets: []
+    image_version: v1.29
+    ingress_enabled: true
+    logger:
+      log_format: “text”
+      log_level: “info”
+      time_field_format: “2006-01-02T15:04:05Z07:00”
+      sampler_rate: “1"
+    node_selector:
+      node-role.kubernetes.io/primary: “”
+#      metadata: {}
+    pod_annotations: {}
+    pod_labels:
+      app: kiali
+    priority_class_name: “high”
+    replicas: 1
+    resources:
+      requests:
+        cpu: 100m
+        memory: 256Mi
+      limits:
+        cpu: 2000m
+        memory: 1024Mi
+    secret_name: “kiali”
+    service_annotations: {}
+    service_type: “”
+    tolerations: []
+    version_label: v1.29
+    view_only_mode: true
+  external_services:
+    prometheus:
+      url: “http://prometheus-server.prometheus.svc.cluster.local:9090”
+    custom_dashboards:
+      enabled: false
+  identity: {}
+    #cert_file:
+    #private_key_file:
+  login_token:
+    signing_key: “”
+  server:
+    port: 20001
+    metrics_enabled: true
+    metrics_port: 9090
+    web_root: “”
+
+
+
+
+#     in_cluster_url: “http://prometheus-prometheus.core-prometheus.svc.cluster.local:9090”
+#     tracing:
+# #      url: “http://tracing.istio-system.svc.cluster.local”
+#       in_cluster_url: “http://tracing.istio-system/jaeger”
+#     custom_dashboards:
+#       enabled: false
+#       discovery_enabled: false
