@@ -86,22 +86,22 @@ pilot:
 #################################
 kiali-server:
   isDashboardEnabled: true
-  nameOverride: “kiali”
-  fullnameOverride: “kiali”
-  kiali_route_url: “”
-  istio_namespace: “istio-system” # default is where Kiali is installed
+  nameOverride: kiali
+  fullnameOverride: kiali
+  kiali_route_url: ""
+  istio_namespace: istio-system # default is where Kiali is installed
   api:
     namespaces:
       exclude:
-        - “kube-.*”
-        - “istio-system”
+        - kube-.*
+        - istio-system
   auth:
     openid: {}
     openshift: {}
-    strategy: “anonymous”
+    strategy: anonymous
   kubernetes_config:
     excluded_workloads:
-    - “DaemonSet”
+    - DaemonSet
   deployment:
     override_ingress_yaml:
       spec:
@@ -128,25 +128,25 @@ kiali-server:
       pod: {}
       pod_anti: {}
     custom_dashboards:
-      excludes: [‘’]
-      includes: [‘*’]
+      excludes: ['']
+      includes: ['*']
     hpa:
-      api_version: “autoscaling/v2beta2”
+      api_version: "autoscaling/v2beta2"
       spec: {}
     image_name: quay.io/kiali/kiali
-    image_pull_policy: “Always”
+    image_pull_policy: "Always"
     image_pull_secrets: []
     image_version: v1.29
     ingress_enabled: true
     logger:
-      log_format: “text”
-      log_level: “info”
-      time_field_format: “2006-01-02T15:04:05Z07:00”
-    sampler_rate: “1"
+      log_format: "text"
+      log_level: "info"
+      time_field_format: "2006-01-02T15:04:05Z07:00"
+    sampler_rate: "1"
     pod_annotations: {}
     pod_labels:
       app: kiali
-    priority_class_name: “high”
+    priority_class_name: "high"
     replicas: 1
     resources:
       requests:
@@ -155,16 +155,16 @@ kiali-server:
       limits:
         cpu: 2000m
         memory: 1024Mi
-    secret_name: “kiali”
+    secret_name: "kiali"
     service_annotations: {}
-    service_type: “”
+    service_type: ""
     tolerations: []
     version_label: v1.29
     view_only_mode: true
 
   external_services:
     prometheus:
-      url: “http://prometheus-server.prometheus.svc.cluster.local”
+      url: "http://prometheus-server.prometheus.svc.cluster.local"
             
     custom_dashboards:
       enabled: false
@@ -173,12 +173,12 @@ kiali-server:
     #cert_file:
     #private_key_file:
   login_token:
-    signing_key: “”
+    signing_key: ""
   server:
     port: 20001
     metrics_enabled: true
     metrics_port: 9090
-    web_root: “”
+    web_root: ""
 
 
 
