@@ -1,4 +1,5 @@
 global:
+  jwtPolicy: first-party-jwt
   istio_cni:
     enable: true
   istioNamespace: istio-system
@@ -60,8 +61,6 @@ global:
   remotePilotAddress: ""
   caAddress: ""
   externalIstiod: false
-
-  jwtPolicy: "third-party-jwt"
 
   pilotCertProvider: istiod
   sds:
@@ -163,7 +162,8 @@ kiali-server:
 
   external_services:
     prometheus:
-      url: “http://prometheus-server.prometheus.svc.cluster.local:9090”
+      url: “http://prometheus-server.prometheus.svc.cluster.local”
+            
     custom_dashboards:
       enabled: false
 
