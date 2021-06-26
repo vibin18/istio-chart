@@ -1,7 +1,76 @@
-meshConfig:
-  enablePrometheusMerge: false
-  ProxyConfig:
-    interceptionMode: REDIRECT
+global:
+  istio_cni:
+    enable: true
+  istioNamespace: istio-system
+  defaultPodDisruptionBudget:
+    enabled: false
+  defaultResources:
+    requests:
+      cpu: 10m
+
+  hub: docker.io/istio
+  tag: 1.10.2
+
+  istiod:
+    enableAnalysis: false
+
+  logAsJson: false
+  logging:
+    level: "default:info"
+
+  omitSidecarInjectorConfigMap: false
+  oneNamespace: false
+  operatorManageWebhooks: false
+  priorityClassName: ""
+
+  proxy:
+    image: proxyv2
+    autoInject: enabled
+    clusterDomain: "cluster.local"
+    componentLogLevel: "misc:error"
+    enableCoreDump: false
+    excludeInboundPorts: ""
+    includeIPRanges: "*"
+    excludeIPRanges: ""
+    excludeOutboundPorts: ""
+    # Expected values are: trace|debug|info|warning|error|critical|off
+    logLevel: warning
+    privileged: false
+    readinessFailureThreshold: 30
+    readinessInitialDelaySeconds: 1
+    readinessPeriodSeconds: 2
+    # Resources for the sidecar.
+    resources:
+      requests:
+        cpu: 100m
+        memory: 128Mi
+      limits:
+        cpu: 2000m
+        memory: 1024Mi
+    statusPort: 15020
+    tracer: "zipkin"
+    holdApplicationUntilProxyStarts: true
+
+
+    meshConfig:
+      enablePrometheusMerge: false
+      ProxyConfig:
+        interceptionMode: REDIRECT
+
+  remotePilotAddress: ""
+  caAddress: ""
+  externalIstiod: false
+
+  jwtPolicy: "third-party-jwt"
+
+  pilotCertProvider: istiod
+  sds:
+    token:
+      aud: istio-ca
+  tracer:
+    zipkin:
+      address: ""
+
 
 istio_cni:
   enable: true
@@ -26,7 +95,7 @@ kiali-server:
     namespaces:
       exclude:
         - “kube-.*”
- #       - “istio-system”
+        - “istio-system”
   auth:
     openid: {}
     openshift: {}
@@ -37,9 +106,8 @@ kiali-server:
   deployment:
     override_ingress_yaml:
       spec:
-        ingressClassName: public
         rules:
-        - host: kiali.eu.dev.csg.daimler-truck.com
+        - host: kiali.vbin.in
           http:
             paths:
             - backend:
@@ -49,7 +117,7 @@ kiali-server:
               pathType: ImplementationSpecific
         tls:
         - hosts:
-          - kiali.eu.dev.csg.daimler-truck.com
+          - kiali.vbin.in
     # This only limits what Kiali will attempt to see, but Kiali Service Account has permissions to see everything.
     # For more control over what the Kial Service Account can see, use the Kiali Operator
     #accessible_namespaces: [“^((?!(istio-system|kube.*)).)*$“]
@@ -73,10 +141,7 @@ kiali-server:
       log_format: “text”
       log_level: “info”
       time_field_format: “2006-01-02T15:04:05Z07:00”
-      sampler_rate: “1"
-    node_selector:
-      node-role.kubernetes.io/primary: “”
-#      metadata: {}
+    sampler_rate: “1"
     pod_annotations: {}
     pod_labels:
       app: kiali
@@ -95,11 +160,13 @@ kiali-server:
     tolerations: []
     version_label: v1.29
     view_only_mode: true
+
   external_services:
     prometheus:
       url: “http://prometheus-server.prometheus.svc.cluster.local:9090”
     custom_dashboards:
       enabled: false
+
   identity: {}
     #cert_file:
     #private_key_file:
