@@ -50,7 +50,7 @@ global:
         memory: 1024Mi
     statusPort: 15020
     tracer: "zipkin"
-    holdApplicationUntilProxyStarts: true
+    holdApplicationUntilProxyStarts: false
 
 
     meshConfig:
